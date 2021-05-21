@@ -111,6 +111,11 @@ document.getElementById("A4").addEventListener("click", function(){ playNote('A4
 document.getElementById("Bb4").addEventListener("click", function(){ playNote('Bb4'); });
 document.getElementById("B4").addEventListener("click", function(){ playNote('B4'); });
 document.getElementById("C5").addEventListener("click", function(){ playNote('C5'); });
+document.getElementById("Db5").addEventListener("click", function(){ playNote('Db5'); });
+document.getElementById("D5").addEventListener("click", function(){ playNote('D5'); });
+document.getElementById("Eb5").addEventListener("click", function(){ playNote('Eb5'); });
+document.getElementById("E5").addEventListener("click", function(){ playNote('E5'); });
+document.getElementById("F5").addEventListener("click", function(){ playNote('F5'); });
 
 
 
