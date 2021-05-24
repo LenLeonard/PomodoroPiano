@@ -8,14 +8,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
         <script type="module" src="./tones.js"> </script>
+        
     </head>
     <body>
-        <h1>Pomodoro + Piano</h1>
+        <h1><em>Pomodoro + Piano</em></h1>
         <!--Pomodoro HTML-->
+        
+        
         <div id="pomContainer">
             <p id = "work" class="label">Work</p><p id = "break" class="label">Break</p><p id = "cycles" class="label">Session Count</p>
             <!--Work Timer-->
             <div id="work-timer" class = "timer">
+                
                 <p id="w_minutes">25</p><p class="colon">:</p><p id="w_seconds">00</p>
             </div>
             <!--Cycle Counter-->
@@ -30,9 +34,36 @@
         <button id="stop" class="btn">Pause</button>
         <button id="reset" class="btn">Reset</button>
     </div>
+    
+    <!--Custom time input-->
+    <h2>Pomodoro Settings</h2>
+    <form id="form">
+        <Input type = "text" id="userStartMin" placeholder="Enter Session Minutes"></Input>
+        <Input type = "text" id="userStartSec" placeholder="Enter Session Seconds"></Input>
+        <Input type = "text" id="userBreakMin" placeholder ="Enter Break Minutes"></Input>
+        <Input type = "text" id="userBreakSec" placeholder ="Enter Break Seconds"></Input>
+        <input type = "button" value="Save Settings" id="updateButton">
+
+    </form>
+    <h2>Piano Settings</h2>
+<div id="overlayButtons">
+    <button id="revealPiano" class='revealBtn'>Reveal Piano</button>
+    <button id="hidePiano" class='revealBtn'>Hide Piano</button>
+      </div>
+      <h2>Jam Track</h2>
+      <div id="jamTrackDiv">
+      <audio id="jamTrack" controls>
+        
+        <source src="bossaNovaJamTrack.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio><br>
+    </div>
+    
+    
         
     <!--Piano HTML-->
-        <div class="piano" >
+    <div class='pianoParent'>
+        <div class="piano">
             <div id="C4" class="key white"></div>
             <div id="Db4" class="key black"></div>
             <div id="D4" class="key white"></div>
@@ -52,5 +83,14 @@
             <div id="E5" class="key white"></div>
             <div id="F5" class="key white"></div>
           </div>
-    </body>l
+        <div class ="overlay" id="pianoOverlay">
+            
+        </div>
+    </div>
+        
+
+        
+          
+          
+    </body>
 </html>

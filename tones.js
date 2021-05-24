@@ -1,12 +1,14 @@
 import * as Tone from "https://cdn.skypack.dev/tone";
 
+
 //Pomodoro JS
 
 let start = document.getElementById('start');
 let reset = document.getElementById('reset');
 let stop = document.getElementById('stop');
 
-let workMinutes = document.getElementById('w_minutes');
+let workMinutes = document.getElementById('w_minutes')
+
 let workSeconds = document.getElementById('w_seconds');
 
 let breakMinutes = document.getElementById('b_minutes');
@@ -18,7 +20,7 @@ start.addEventListener('click', function(){
     if(startTimer === undefined){
         startTimer = setInterval(timer, 1000)
     }else {
-        alert("Timer is already running");
+        alert("You've already started!");
     }
 })
 
@@ -30,8 +32,13 @@ reset.addEventListener('click', function(){
         breakSeconds.innerText = "00";
 
         document.getElementById('counter').innerText = 0;
+        
         stopInterval()
         startTimer = undefined;
+        
+        overlay.style.display="block";
+        pianoHidden = true;
+        audioPlayer.pause();
 
 })
 
@@ -45,15 +52,33 @@ stop.addEventListener('click', function(){
 function timer(){
     //Work Timer Countdown
     if (workSeconds.innerText != 0){
-        workSeconds.innerText--;
+      
+      overlay.style.display="block";
+      pianoHidden = true;
+      audioPlayer.pause();
+        
+      workSeconds.innerText--;
+        if(workSeconds.innerText < 10){
+          workSeconds.innerText = '0' + workSeconds.innerText;
+        }
     }else if(workMinutes.innerText != 0 && workSeconds.innerText == 0){
         workSeconds.innerText = 59;
         workMinutes.innerText--;
-    }
+        
+        }
+    
     //Break Timer Countdown
     if(workMinutes.innerText == 0 && workSeconds.innerText == 0){
+      
+      overlay.style.display="none";
+      pianoHidden = false;
+      audioPlayer.play();
+      
         if(breakSeconds.innerText != 0){
             breakSeconds.innerText--;
+            if(breakSeconds.innerText < 10){
+              breakSeconds.innerText = '0' + breakSeconds.innerText;
+            }
         } else if(breakMinutes.innerText !=0 && breakSeconds.innerText == 0){
             breakSeconds.innerText = 59;
             breakMinutes.innerText--;
@@ -77,10 +102,42 @@ function stopInterval(){
     clearInterval(startTimer);
 }
 
+//Pomodoro Settings Functionality
+
+let updateButton = document.getElementById('updateButton');
+updateButton.addEventListener('click', function(){
+  
+  let userStartMin = document.getElementById('userStartMin').value;
+  if(userStartMin !== ""){
+    workMinutes.innerText = userStartMin;
+  }
+  
+  let userStartSec = document.getElementById('userStartSec').value;
+  if(userStartSec !== ""){
+    workSeconds.innerText = userStartSec;
+  }
+
+  let userBreakMin = document.getElementById('userBreakMin').value;
+  if(userBreakMin !== ""){
+    breakMinutes.innerText = userBreakMin;
+  }
+  let userBreakSec = document.getElementById('userBreakSec').value;
+  if(userBreakSec !== ""){
+    breakSeconds.innerText = userBreakSec;
+  }
+  
+  document.getElementById('userStartMin').value = ""
+  document.getElementById('userStartSec').value = ""
+  document.getElementById('userBreakMin').value = ""
+  document.getElementById('userBreakSec').value = ""
+
+  });
+
+
 //Piano JS
 
-
-export function playNote(note) {
+function playNote(note) {
+  if (pianoHidden === false){
   const synth = new Tone.Synth().toDestination();
   synth.triggerAttackRelease(note, "8n");
   
@@ -89,13 +146,7 @@ export function playNote(note) {
   document.getElementById(note).classList.add("active");
     setTimeout(function(){ document.getElementById(note).classList.remove("active");}, 120);
   }
-
-
-    
-    
-    
-
-
+}
 
 //so you can click on a note for its tone
 document.getElementById("C4").addEventListener("click", function(){ playNote('C4'); });
@@ -117,7 +168,34 @@ document.getElementById("Eb5").addEventListener("click", function(){ playNote('E
 document.getElementById("E5").addEventListener("click", function(){ playNote('E5'); });
 document.getElementById("F5").addEventListener("click", function(){ playNote('F5'); });
 
+//Piano Display Toggle
 
+let pianoHidden = true;
+
+let revealPianoBtn = document.getElementById('revealPiano');
+let hidePianoBtn = document.getElementById('hidePiano');
+
+let overlay = document.getElementById('pianoOverlay');
+
+hidePianoBtn.addEventListener('click', function(){
+  overlay.style.display="block";
+  pianoHidden = true;
+  audioPlayer.pause();
+  if(startTimer === undefined){
+    startTimer = setInterval(timer, 1000)
+};
+});
+
+revealPianoBtn.addEventListener('click', function(){
+  overlay.style.display="none";
+  pianoHidden = false;
+  audioPlayer.play();
+  stopInterval()
+    startTimer = undefined;
+});
+
+
+//Computer keys as musical keys functionality
 
 window.addEventListener('keydown', (event) => {
   const pianoKeys = ["a","w","s","e","d","f","t","g","y","h","u","j","k","o","l","p",";","'"];
@@ -214,3 +292,13 @@ window.addEventListener('keydown', (event) => {
   }
     
 });
+
+//Jam Track Loop JS
+let audioPlayer = document.getElementById("jamTrack");
+audioPlayer.loop = true;
+audioPlayer.load();
+
+
+
+
+

@@ -4,20 +4,36 @@
 *, *::before *::after {
     box-sizing: border-box;
   }
+  em {      
+    font-size: 200%;     
+  } 
  
   h1 {
     color: black;
     font-family: Pattaya;
     text-align: center;
+    
 }
-
+h2 {
+  color: black;
+  font-family: Pattaya;
+  text-align: center;
+}
   body {
     background: linear-gradient(35deg, #CCFFFF, #FFCCCC);
     margin: 0;
     min-height: 100vh;
     display: grid;
+    
     justify-content: center;
     
+  }
+
+  #form{
+    justify-content: center;
+    overflow: hidden;
+    display: flex;
+    height:fit-content;
   }
 
   #pomContainer {
@@ -28,8 +44,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    position: relative;
-    bottom: 75px
+    
 }
 
 /*timers*/
@@ -67,7 +82,7 @@ p {
 
 #counter {
     grid-area: 2 / 3 / 2 / 3;
-    color: red;
+    color: rgb(119, 112, 230);
 }
 
 #work-timer {
@@ -90,6 +105,19 @@ p {
     font-size: 20px;
 }
 
+
+#overlayButtons{
+  
+ 
+  text-align: center;
+  position: relative;
+  bottom: 10px;
+  width: auto;
+  height: auto;
+  font-family: Roboto;
+  font-size: 20px;
+}
+
 #start {
     grid-area: 3 / 2 / 3 / 2;
 }
@@ -105,11 +133,24 @@ p {
 
   .piano {
     display: flex;
-    overflow: hidden;
+    
     
     justify-content: center;
   }
+
+.overlay{
+  background-color: black;
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  bottom: 285px;
+  opacity: 0.7;
   
+}
+
+ 
+
   .key {
     height: calc(var(--width) * 4);
     width: var(--width);
@@ -130,11 +171,17 @@ p {
     background-color: black;
     margin-left: calc(var(--width) / -2);
     margin-right: calc(var(--width) / -2);
-    z-index: 2;
+    z-index: 0;
   }
   
   .black.active {
     background-color: rgb(77, 77, 77);
   }
 
+  /*Jam Track CSS*/
+  #jamTrackDiv{
+  display: flex;
+  
+  justify-self: center;
+  }
   
