@@ -3,14 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>Pomodoro + Piano</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
         <script type="module" src="./tones.js"> </script>
         
     </head>
-    <body>
+    <body id="body">
         <h1><em>Pomodoro + Piano</em></h1>
         <!--Pomodoro HTML-->
         
@@ -19,6 +19,11 @@
             <p id = "work" class="label">Work</p><p id = "break" class="label">Break</p><p id = "cycles" class="label">Session Count</p>
             <!--Work Timer-->
             <div id="work-timer" class = "timer">
+                
+                
+                <input  title = "Minutes: Seconds" name = "sessionTime" type = "text" id="sessionTime" placeholder="" required pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"></Input>
+            
+                
                 
                 <p id="w_minutes">25</p><p class="colon">:</p><p id="w_seconds">00</p>
             </div>

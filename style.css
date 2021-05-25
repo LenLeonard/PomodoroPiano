@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Pattaya&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
-*, *::before *::after {
-    box-sizing: border-box;
-  }
+
+  
   em {      
     font-size: 200%;     
   } 
@@ -57,7 +56,7 @@ h2 {
 }
 
 #work {
-    grid-area: 1 / 2 / 1 / 2;
+    grid-area: 2 / 2/ 1 / 2;
 }
 #break {
     grid-area: 1 / 4 / 1 / 4;
@@ -84,10 +83,30 @@ p {
     grid-area: 2 / 3 / 2 / 3;
     color: rgb(119, 112, 230);
 }
+#sessionTime {
+  font-family: Roboto;
+    font-size: 30px;
+    font-weight: bold;
+    border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  border-color: transparent;
+  background-color: transparent;
+  width: 42%;
+  position: relative;
+  left: 78px;
+  border: none transparent;
+  outline: none;
+  
+}
 
 #work-timer {
     grid-area: 2 / 2 / 2 / 2;
+    position: relative;
+    right: 25.5px;
 }
+
 
 #break-timer {
     grid-area: 2 / 4 / 2 / 4;

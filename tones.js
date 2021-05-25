@@ -7,14 +7,16 @@ let start = document.getElementById('start');
 let reset = document.getElementById('reset');
 let stop = document.getElementById('stop');
 
-let workMinutes = document.getElementById('w_minutes')
 
+let workMinutes = document.getElementById('w_minutes')
 let workSeconds = document.getElementById('w_seconds');
 
 let breakMinutes = document.getElementById('b_minutes');
 let breakSeconds = document.getElementById('b_seconds');
 
 let startTimer;
+
+//Pomodoro Start Reset Pause
 
 start.addEventListener('click', function(){
     if(startTimer === undefined){
@@ -47,6 +49,151 @@ stop.addEventListener('click', function(){
     startTimer = undefined;
 
 })
+
+//Pomodoro Text Input Counters
+
+  
+
+
+
+
+
+
+//Questionable Approach To Seemless Input As Timer Value
+//It uses an event listener to listen for Enter and then uses that to update the times
+
+window.addEventListener('keydown', (event) => {
+   
+      console.log(event.key);
+      if(event.key === "Enter"){
+      document.getElementById('sessionTime').placeholder="";  
+      let sessionTime = document.getElementById('sessionTime').value;
+      let strArr = sessionTime.split(":");
+      let userStartMin = strArr[0];
+      let userStartSec = strArr[1];
+      workMinutes.innerText = userStartMin;
+      workSeconds.innerText = userStartSec;
+      let workTimer = document.getElementById('work-timer');
+  workTimer.style.fontSize='30px';
+  document.getElementById('sessionTime').value = "";
+  document.getElementById('sessionTime').style.caretColor = "transparent";
+  startTimer = setInterval(timer, 1000);
+  
+
+      console.log(sessionTime);
+      console.log(strArr)
+      }});
+
+      let textInput = document.getElementById('sessionTime');
+textInput.addEventListener('click', function(){
+console.log('clicky')
+stopInterval()
+    startTimer = undefined;
+  let workTimer = document.getElementById('work-timer');
+  var tempPlaceHolder = workMinutes.innerText + ':' + workSeconds.innerText;
+  document.getElementById('sessionTime').placeholder = tempPlaceHolder;
+  document.getElementById('sessionTime').style.caretColor = "black";
+  workTimer.style.fontSize='0';
+});
+
+let body = document.getElementById('body');
+body.addEventListener('click', function(){
+  if(startTimer === undefined ){
+    let workTimer = document.getElementById('work-timer');
+    if(workTimer.style.fontSize =='0px'){
+    console.log('clicky2')
+    
+    let currentPlaceHolder = document.getElementById('sessionTime').placeholder;
+    console.log(currentPlaceHolder);
+    let strArr = currentPlaceHolder.split(":");
+    console.log(strArr);
+    workMinutes.innerText = strArr[0];
+    workSeconds.innerText = strArr[1];
+    console.log(workMinutes.innerText + ":" + workSeconds.innerText)
+    
+    /*workTimer.style.fontSize='30px';
+  document.getElementById('sessionTime').value = "";
+  document.getElementById('sessionTime').style.caretColor = "transparent";
+  startTimer = setInterval(timer, 1000);*/
+    
+
+    
+    
+
+
+  }}}); 
+  
+  /*
+  let workTimer = document.getElementById('work-timer');
+  if(startTimer === undefined && workTimer.style.fontSize =='0px'){
+    workTimer.style.fontSize='30px';
+    startTimer = setInterval(timer, 1000);
+    
+  }
+});*/
+
+  
+  
+  
+  
+  /*      if(userStartMin !== ""){
+    workMinutes.innerText = userStartMin;
+  }
+  
+  let userStartSec = document.getElementById('userStartSec').value;
+  if(userStartSec !== ""){
+    workSeconds.innerText = userStartSec;
+  }
+
+  let userBreakMin = document.getElementById('userBreakMin').value;
+  if(userBreakMin !== ""){
+    breakMinutes.innerText = userBreakMin;
+  }
+  let userBreakSec = document.getElementById('userBreakSec').value;
+  if(userBreakSec !== ""){
+    breakSeconds.innerText = userBreakSec;
+  }
+  
+  document.getElementById('userStartMin').value = ""
+  document.getElementById('userStartSec').value = ""
+  document.getElementById('userBreakMin').value = ""
+  document.getElementById('userBreakSec').value = ""
+
+      }
+   });
+
+*/
+
+//Pomodoro Save Settings Functionality
+
+let updateButton = document.getElementById('updateButton');
+updateButton.addEventListener('click', function(){
+  
+  let userStartMin = document.getElementById('userStartMin').value;
+  if(userStartMin !== ""){
+    workMinutes.innerText = userStartMin;
+  }
+  
+  let userStartSec = document.getElementById('userStartSec').value;
+  if(userStartSec !== ""){
+    workSeconds.innerText = userStartSec;
+  }
+
+  let userBreakMin = document.getElementById('userBreakMin').value;
+  if(userBreakMin !== ""){
+    breakMinutes.innerText = userBreakMin;
+  }
+  let userBreakSec = document.getElementById('userBreakSec').value;
+  if(userBreakSec !== ""){
+    breakSeconds.innerText = userBreakSec;
+  }
+  
+  document.getElementById('userStartMin').value = ""
+  document.getElementById('userStartSec').value = ""
+  document.getElementById('userBreakMin').value = ""
+  document.getElementById('userBreakSec').value = ""
+
+  });
 
 //Start Time Function
 function timer(){
@@ -102,36 +249,7 @@ function stopInterval(){
     clearInterval(startTimer);
 }
 
-//Pomodoro Settings Functionality
 
-let updateButton = document.getElementById('updateButton');
-updateButton.addEventListener('click', function(){
-  
-  let userStartMin = document.getElementById('userStartMin').value;
-  if(userStartMin !== ""){
-    workMinutes.innerText = userStartMin;
-  }
-  
-  let userStartSec = document.getElementById('userStartSec').value;
-  if(userStartSec !== ""){
-    workSeconds.innerText = userStartSec;
-  }
-
-  let userBreakMin = document.getElementById('userBreakMin').value;
-  if(userBreakMin !== ""){
-    breakMinutes.innerText = userBreakMin;
-  }
-  let userBreakSec = document.getElementById('userBreakSec').value;
-  if(userBreakSec !== ""){
-    breakSeconds.innerText = userBreakSec;
-  }
-  
-  document.getElementById('userStartMin').value = ""
-  document.getElementById('userStartSec').value = ""
-  document.getElementById('userBreakMin').value = ""
-  document.getElementById('userBreakSec').value = ""
-
-  });
 
 
 //Piano JS
