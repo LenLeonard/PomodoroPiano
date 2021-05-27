@@ -1,172 +1,159 @@
 import * as Tone from "https://cdn.skypack.dev/tone";
 
-
 //Pomodoro JS
 
-let start = document.getElementById('start');
-let reset = document.getElementById('reset');
-let stop = document.getElementById('stop');
+//Grabbing the button elements from the HTML
+let start = document.getElementById("start");
+let reset = document.getElementById("reset");
+let stop = document.getElementById("stop");
 
+//Grabbing the work minutes and seconds
+let workMinutes = document.getElementById("w_minutes");
+let workSeconds = document.getElementById("w_seconds");
 
-let workMinutes = document.getElementById('w_minutes')
-let workSeconds = document.getElementById('w_seconds');
+//Grabbing the break minutes and seconds
+let breakMinutes = document.getElementById("b_minutes");
+let breakSeconds = document.getElementById("b_seconds");
 
-let breakMinutes = document.getElementById('b_minutes');
-let breakSeconds = document.getElementById('b_seconds');
-
+//Declaring the time as undefined; the setInterval() function is called when it startTimer is defined
 let startTimer;
 
-//Pomodoro Start Reset Pause
+//Logic for Pomodoro Start, Reset, and Pause Buttons
 
-start.addEventListener('click', function(){
-    if(startTimer === undefined){
-        startTimer = setInterval(timer, 1000)
-    }else {
-        alert("You've already started!");
-    }
-})
+start.addEventListener("click", function () {
+  if (startTimer === undefined) {
+    startTimer = setInterval(timer, 1000);
+  } else {
+    alert("You've already started!");
+  }
+});
 
-reset.addEventListener('click', function(){
-        workMinutes.innerText = 25;
-        workSeconds.innerText = "00";
+reset.addEventListener("click", function () {
+  //Update clock text
+  workMinutes.innerText = 25;
+  workSeconds.innerText = "00";
+  breakMinutes.innerText = 5;
+  breakSeconds.innerText = "00";
+  document.getElementById("counter").innerText = 0;
 
-        breakMinutes.innerText = 5;
-        breakSeconds.innerText = "00";
+  //Stop timer
+  stopInterval();
+  startTimer = undefined;
 
-        document.getElementById('counter').innerText = 0;
-        
-        stopInterval()
-        startTimer = undefined;
-        
-        overlay.style.display="block";
-        pianoHidden = true;
-        audioPlayer.pause();
+  //Hide piano and pause backing track
+  overlay.style.display = "block";
+  pianoHidden = true;
+  audioPlayer.pause();
+});
 
-})
-
-stop.addEventListener('click', function(){
-    stopInterval()
-    startTimer = undefined;
-
-})
+stop.addEventListener("click", function () {
+  stopInterval();
+  startTimer = undefined;
+});
 
 //Pomodoro Text Input Counters
 
-  
-
-
-
-
-
-
-//Questionable Approach To Seemless Input As Timer Value
+//Seemless Input As Timer Value
 //It uses an event listener to listen for Enter and then uses that to update the times
+//and then uses font stylings to swap out the clock text from the text input text
 
-window.addEventListener('keydown', (event) => {
-   
-      console.log(event.key);
-      if(event.key === "Enter"){
-      document.getElementById('sessionTime').placeholder="";  
-      let sessionTime = document.getElementById('sessionTime').value;
-      let strArr = sessionTime.split(":");
+//Configure the form to send input when enter key is triggered, and check that input against a regular expression
+
+workTimeInput.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    const timeRegex = /^\d{0,2}:\d{0,2}$/;
+    let timerValue = event.target.value;
+    
+    //Update clock text if regex test is successful
+    if (timeRegex.test(timerValue) === true) {
+      let strArr = timerValue.split(":");
       let userStartMin = strArr[0];
       let userStartSec = strArr[1];
       workMinutes.innerText = userStartMin;
       workSeconds.innerText = userStartSec;
-      let workTimer = document.getElementById('work-timer');
-  workTimer.style.fontSize='30px';
-  document.getElementById('sessionTime').value = "";
-  document.getElementById('sessionTime').style.caretColor = "transparent";
-  startTimer = setInterval(timer, 1000);
-  
+      console.log(timerValue + "passed");
 
-      console.log(sessionTime);
-      console.log(strArr)
-      }});
+      //Hide Input Form and Start Clock(clock starts when startTime is defined)
 
-      let textInput = document.getElementById('sessionTime');
-textInput.addEventListener('click', function(){
-console.log('clicky')
-stopInterval()
-    startTimer = undefined;
-  let workTimer = document.getElementById('work-timer');
-  var tempPlaceHolder = workMinutes.innerText + ':' + workSeconds.innerText;
-  document.getElementById('sessionTime').placeholder = tempPlaceHolder;
-  document.getElementById('sessionTime').style.caretColor = "black";
-  workTimer.style.fontSize='0';
+      document.getElementById("workTimeInput").value = "";
+      document.getElementById("workTimeInput").placeholder = "";
+      document.getElementById("workTimeInput").style.caretColor = "transparent";
+
+      startTimer = setInterval(timer, 1000);
+
+      //Show Decrementing Clock Text (This is the text in the <p> tag that gets updated every second)
+
+      let workMinutesText = document.getElementById("w_minutes");
+      let workSecondsText = document.getElementById("w_seconds");
+      let workColonText = document.getElementById("workColon");
+
+      workMinutesText.style.fontSize = "30px";
+      workSecondsText.style.fontSize = "30px";
+      workColonText.style.fontSize = "30px";
+      
+      //How to handle user input that failes regular expression test
+    
+    } else {
+      console.log("did not pass");
+      if (event.key === "Enter") {
+        document.getElementById("workTimeInput").value = "";
+      }
+      alert("Please enter minutes and seconds like this: 25:00");
+    }
+  }
 });
 
-let body = document.getElementById('body');
-body.addEventListener('click', function(){
-  if(startTimer === undefined ){
-    let workTimer = document.getElementById('work-timer');
-    if(workTimer.style.fontSize =='0px'){
-    console.log('clicky2')
-    
-    let currentPlaceHolder = document.getElementById('sessionTime').placeholder;
-    console.log(currentPlaceHolder);
-    let strArr = currentPlaceHolder.split(":");
-    console.log(strArr);
-    workMinutes.innerText = strArr[0];
-    workSeconds.innerText = strArr[1];
-    console.log(workMinutes.innerText + ":" + workSeconds.innerText)
-    
-    /*workTimer.style.fontSize='30px';
-  document.getElementById('sessionTime').value = "";
-  document.getElementById('sessionTime').style.caretColor = "transparent";
-  startTimer = setInterval(timer, 1000);*/
-    
+//If the clock is ticking, clicking on it will pause the clock, present the existing time as the input place holder text, and
+//hide the decrementing clock text.
 
-    
-    
+let textInput = document.getElementById("workTimeInput");
+textInput.addEventListener("click", function () {
+  console.log("clicky");
 
+  stopInterval();
+  startTimer = undefined;
 
-  }}}); 
+  let tempPlaceHolder = workMinutes.innerText + ":" + workSeconds.innerText;
+  document.getElementById("workTimeInput").placeholder = tempPlaceHolder;
+  document.getElementById("workTimeInput").style.caretColor = "black";
   
-  /*
-  let workTimer = document.getElementById('work-timer');
-  if(startTimer === undefined && workTimer.style.fontSize =='0px'){
-    workTimer.style.fontSize='30px';
-    startTimer = setInterval(timer, 1000);
-    
+  let workMinutesText = document.getElementById("w_minutes");
+  let workSecondsText = document.getElementById("w_seconds");
+  let workColonText = document.getElementById("workColon");
+
+  workMinutesText.style.fontSize = "0px";
+  workSecondsText.style.fontSize = "0px";
+  workColonText.style.fontSize = "0px";
+});
+
+//Handling User Click Away: when the user clicks to edit time and then clicks the body of the page,
+//the input field is hidden and the clock text returns (clicking on other elements yet unaccounted for)
+
+let body = document.getElementById("body");
+body.addEventListener("click", function () {
+  if (document.activeElement === body) {
+    console.log("body");
+
+    //Show Timer text
+    let workMinutesText = document.getElementById("w_minutes");
+    let workSecondsText = document.getElementById("w_seconds");
+    let workColonText = document.getElementById("workColon");
+
+    workMinutesText.style.fontSize = "30px";
+    workSecondsText.style.fontSize = "30px";
+    workColonText.style.fontSize = "30px";
+
+    //Hide Display Text
+    document.getElementById("workTimeInput").value = "";
+    document.getElementById("workTimeInput").placeholder = "";
+    document.getElementById("workTimeInput").style.caretColor = "transparent";
   }
-});*/
-
-  
-  
-  
-  
-  /*      if(userStartMin !== ""){
-    workMinutes.innerText = userStartMin;
-  }
-  
-  let userStartSec = document.getElementById('userStartSec').value;
-  if(userStartSec !== ""){
-    workSeconds.innerText = userStartSec;
-  }
-
-  let userBreakMin = document.getElementById('userBreakMin').value;
-  if(userBreakMin !== ""){
-    breakMinutes.innerText = userBreakMin;
-  }
-  let userBreakSec = document.getElementById('userBreakSec').value;
-  if(userBreakSec !== ""){
-    breakSeconds.innerText = userBreakSec;
-  }
-  
-  document.getElementById('userStartMin').value = ""
-  document.getElementById('userStartSec').value = ""
-  document.getElementById('userBreakMin').value = ""
-  document.getElementById('userBreakSec').value = ""
-
-      }
-   });
-
-*/
+});
 
 //Pomodoro Save Settings Functionality
+//To be removed when text input is working
 
-let updateButton = document.getElementById('updateButton');
+/* let updateButton = document.getElementById('updateButton');
 updateButton.addEventListener('click', function(){
   
   let userStartMin = document.getElementById('userStartMin').value;
@@ -194,229 +181,295 @@ updateButton.addEventListener('click', function(){
   document.getElementById('userBreakSec').value = ""
 
   });
+*/
 
+
+//The logic that handles the countdown
+//(It also makes calls to the piano module to hide or reveal the piano
 //Start Time Function
-function timer(){
-    //Work Timer Countdown
-    if (workSeconds.innerText != 0){
-      
-      overlay.style.display="block";
-      pianoHidden = true;
-      audioPlayer.pause();
-        
-      workSeconds.innerText--;
-        if(workSeconds.innerText < 10){
-          workSeconds.innerText = '0' + workSeconds.innerText;
-        }
-    }else if(workMinutes.innerText != 0 && workSeconds.innerText == 0){
-        workSeconds.innerText = 59;
-        workMinutes.innerText--;
-        
-        }
+
+function timer() {
+  //Work Timer Countdown
+  if (workSeconds.innerText != 0) {
     
-    //Break Timer Countdown
-    if(workMinutes.innerText == 0 && workSeconds.innerText == 0){
-      
-      overlay.style.display="none";
-      pianoHidden = false;
-      audioPlayer.play();
-      
-        if(breakSeconds.innerText != 0){
-            breakSeconds.innerText--;
-            if(breakSeconds.innerText < 10){
-              breakSeconds.innerText = '0' + breakSeconds.innerText;
-            }
-        } else if(breakMinutes.innerText !=0 && breakSeconds.innerText == 0){
-            breakSeconds.innerText = 59;
-            breakMinutes.innerText--;
-        }
+    //Hide the piano while the counter is decrementing
+    overlay.style.display = "block";
+    pianoHidden = true;
+    audioPlayer.pause();
 
+    //Decrement by one at interval
+    workSeconds.innerText--;
+    
+    //Add leading 0's to the clock display
+    if (workSeconds.innerText < 10) {
+      workSeconds.innerText = "0" + workSeconds.innerText;
     }
-    //Increment Counter by one if one full cyle is completed
-    if(workMinutes.innerText == 0 && workSeconds.innerText == 0 && breakSeconds.innerText == 0){
-        workMinutes.innerText = 25;
-        workSeconds.innerText = "00";
+    //If there is still time left but we are out of seconds, mnove to the next minute 
+  } else if (workMinutes.innerText != 0 && workSeconds.innerText == 0) {
+    workSeconds.innerText = 59;
+    workMinutes.innerText--;
+  }
 
-        breakMinutes.innerText = 5;
-        breakSeconds.innerText = "00";
+  //Break Timer Countdown
+  if (workMinutes.innerText == 0 && workSeconds.innerText == 0) {
+    
+    //Shows the piano at break time
+    overlay.style.display = "none";
+    pianoHidden = false;
+    audioPlayer.play();
 
-        document.getElementById('counter').innerText++;
 
+    if (breakSeconds.innerText != 0) {
+      breakSeconds.innerText--;
+      if (breakSeconds.innerText < 10) {
+        breakSeconds.innerText = "0" + breakSeconds.innerText;
+      }
+    } else if (breakMinutes.innerText != 0 && breakSeconds.innerText == 0) {
+      breakSeconds.innerText = 59;
+      breakMinutes.innerText--;
     }
+  }
+  //Increment Counter by one if one full cyle is completed
+  if (
+    workMinutes.innerText == 0 &&
+    workSeconds.innerText == 0 &&
+    breakSeconds.innerText == 0
+  ) {
+    workMinutes.innerText = 25;
+    workSeconds.innerText = "00";
+
+    breakMinutes.innerText = 5;
+    breakSeconds.innerText = "00";
+
+    document.getElementById("counter").innerText++;
+  }
+  console.log(workMinutes.innerText + ":" + workSeconds.innerText);
 }
+
 //Stop Time Function
-function stopInterval(){
-    clearInterval(startTimer);
+function stopInterval() {
+  clearInterval(startTimer);
 }
-
-
 
 
 //Piano JS
 
 function playNote(note) {
-  if (pianoHidden === false){
-  const synth = new Tone.Synth().toDestination();
-  synth.triggerAttackRelease(note, "8n");
-  
-  /*Darkens the keys upon trigger.*/
-  
-  document.getElementById(note).classList.add("active");
-    setTimeout(function(){ document.getElementById(note).classList.remove("active");}, 120);
+  if (pianoHidden === false) {
+    const synth = new Tone.Synth().toDestination();
+    synth.triggerAttackRelease(note, "8n");
+
+    //Darkens the keys upon trigger
+
+    document.getElementById(note).classList.add("active");
+    setTimeout(function () {
+      document.getElementById(note).classList.remove("active");
+    }, 120);
   }
 }
 
-//so you can click on a note for its tone
-document.getElementById("C4").addEventListener("click", function(){ playNote('C4'); });
-document.getElementById("Db4").addEventListener("click", function(){ playNote('Db4'); });
-document.getElementById("D4").addEventListener("click", function(){ playNote('D4'); });
-document.getElementById("Eb4").addEventListener("click", function(){ playNote('Eb4'); });
-document.getElementById("E4").addEventListener("click", function(){ playNote('E4'); });
-document.getElementById("F4").addEventListener("click", function(){ playNote('F4'); });
-document.getElementById("Gb4").addEventListener("click", function(){ playNote('Gb4'); });
-document.getElementById("G4").addEventListener("click", function(){ playNote('G4'); });
-document.getElementById("Ab4").addEventListener("click", function(){ playNote('Ab4'); });
-document.getElementById("A4").addEventListener("click", function(){ playNote('A4'); });
-document.getElementById("Bb4").addEventListener("click", function(){ playNote('Bb4'); });
-document.getElementById("B4").addEventListener("click", function(){ playNote('B4'); });
-document.getElementById("C5").addEventListener("click", function(){ playNote('C5'); });
-document.getElementById("Db5").addEventListener("click", function(){ playNote('Db5'); });
-document.getElementById("D5").addEventListener("click", function(){ playNote('D5'); });
-document.getElementById("Eb5").addEventListener("click", function(){ playNote('Eb5'); });
-document.getElementById("E5").addEventListener("click", function(){ playNote('E5'); });
-document.getElementById("F5").addEventListener("click", function(){ playNote('F5'); });
+//Add onclick event listeners to each key element that play the corresponding note
+//was trying a loop based solution below, yet unsuccessful
+/*let noteArray = ['C4','Db4','D4','Eb','E4','F','Gb4','G4','Ab4','A4','Bb4','B4','C5','Db5','D5','Eb5','E5','F5'];
+noteArray.forEach(note => {document.getElementById(note).addEventListener("click", function(){ playNote(note); });
+  
+}); */
+
+document.getElementById("C4").addEventListener("click", function () {
+  playNote("C4");
+});
+document.getElementById("Db4").addEventListener("click", function () {
+  playNote("Db4");
+});
+document.getElementById("D4").addEventListener("click", function () {
+  playNote("D4");
+});
+document.getElementById("Eb4").addEventListener("click", function () {
+  playNote("Eb4");
+});
+document.getElementById("E4").addEventListener("click", function () {
+  playNote("E4");
+});
+document.getElementById("F4").addEventListener("click", function () {
+  playNote("F4");
+});
+document.getElementById("Gb4").addEventListener("click", function () {
+  playNote("Gb4");
+});
+document.getElementById("G4").addEventListener("click", function () {
+  playNote("G4");
+});
+document.getElementById("Ab4").addEventListener("click", function () {
+  playNote("Ab4");
+});
+document.getElementById("A4").addEventListener("click", function () {
+  playNote("A4");
+});
+document.getElementById("Bb4").addEventListener("click", function () {
+  playNote("Bb4");
+});
+document.getElementById("B4").addEventListener("click", function () {
+  playNote("B4");
+});
+document.getElementById("C5").addEventListener("click", function () {
+  playNote("C5");
+});
+document.getElementById("Db5").addEventListener("click", function () {
+  playNote("Db5");
+});
+document.getElementById("D5").addEventListener("click", function () {
+  playNote("D5");
+});
+document.getElementById("Eb5").addEventListener("click", function () {
+  playNote("Eb5");
+});
+document.getElementById("E5").addEventListener("click", function () {
+  playNote("E5");
+});
+document.getElementById("F5").addEventListener("click", function () {
+  playNote("F5");
+});
 
 //Piano Display Toggle
 
 let pianoHidden = true;
 
-let revealPianoBtn = document.getElementById('revealPiano');
-let hidePianoBtn = document.getElementById('hidePiano');
+let revealPianoBtn = document.getElementById("revealPiano");
+let hidePianoBtn = document.getElementById("hidePiano");
 
-let overlay = document.getElementById('pianoOverlay');
+let overlay = document.getElementById("pianoOverlay");
 
-hidePianoBtn.addEventListener('click', function(){
-  overlay.style.display="block";
+hidePianoBtn.addEventListener("click", function () {
+  overlay.style.display = "block";
   pianoHidden = true;
   audioPlayer.pause();
-  if(startTimer === undefined){
-    startTimer = setInterval(timer, 1000)
-};
+  if (startTimer === undefined) {
+    startTimer = setInterval(timer, 1000);
+  }
 });
 
-revealPianoBtn.addEventListener('click', function(){
-  overlay.style.display="none";
+revealPianoBtn.addEventListener("click", function () {
+  overlay.style.display = "none";
   pianoHidden = false;
   audioPlayer.play();
-  stopInterval()
-    startTimer = undefined;
+  stopInterval();
+  startTimer = undefined;
 });
-
 
 //Computer keys as musical keys functionality
 
-window.addEventListener('keydown', (event) => {
-  const pianoKeys = ["a","w","s","e","d","f","t","g","y","h","u","j","k","o","l","p",";","'"];
+window.addEventListener("keydown", (event) => {
+  const pianoKeys = [
+    "a",
+    "w",
+    "s",
+    "e",
+    "d",
+    "f",
+    "t",
+    "g",
+    "y",
+    "h",
+    "u",
+    "j",
+    "k",
+    "o",
+    "l",
+    "p",
+    ";",
+    "'",
+  ];
   const keyMap = [
     {
-       key: 'a',
-       note: 'C4'
+      key: "a",
+      note: "C4",
     },
     {
-       key: 'w',
-       note: 'Db4'
+      key: "w",
+      note: "Db4",
     },
     {
-       key: 's',
-       note: 'D4'
+      key: "s",
+      note: "D4",
     },
     {
-      key: 'e',
-      note: 'Eb4'
-   },
-   {
-      key: 'd',
-      note: 'E4'
-   },
-   {
-      key: 'f',
-      note: 'F4'
-   },
-   {
-    key: 'f',
-    note: 'Gb4'
-},
- {
-    key: 't',
-    note: 'Gb4'
- },
- {
-    key: 'g',
-    note: 'G4'
- },
- {
-  key: 'y',
-  note: 'Ab4'
-},
-{
-  key: 'h',
-  note: 'A4'
-},
-{
-  key: 'u',
-  note: 'Bb4'
-},
-{
-  key: 'j',
-  note: 'B4'
-},
-{
-  key: 'k',
-  note: 'C5'
-},
-{
-  key: 'o',
-  note: 'Db5'
-},
-{
-  key: 'l',
-  note: 'D5'
-},
-{
-  key: 'p',
-  note: 'Eb5'
-},
-{
-  key: ';',
-  note: 'E5'
-},
-{
-  key: "'",
-  note: 'F5'
-},
-    
+      key: "e",
+      note: "Eb4",
+    },
+    {
+      key: "d",
+      note: "E4",
+    },
+    {
+      key: "f",
+      note: "F4",
+    },
+    {
+      key: "f",
+      note: "Gb4",
+    },
+    {
+      key: "t",
+      note: "Gb4",
+    },
+    {
+      key: "g",
+      note: "G4",
+    },
+    {
+      key: "y",
+      note: "Ab4",
+    },
+    {
+      key: "h",
+      note: "A4",
+    },
+    {
+      key: "u",
+      note: "Bb4",
+    },
+    {
+      key: "j",
+      note: "B4",
+    },
+    {
+      key: "k",
+      note: "C5",
+    },
+    {
+      key: "o",
+      note: "Db5",
+    },
+    {
+      key: "l",
+      note: "D5",
+    },
+    {
+      key: "p",
+      note: "Eb5",
+    },
+    {
+      key: ";",
+      note: "E5",
+    },
+    {
+      key: "'",
+      note: "F5",
+    },
   ];
 
-  if(pianoKeys.includes(event.key)){
+  if (pianoKeys.includes(event.key)) {
     let keyStroke = event.key;
     console.log(keyStroke);
-    const found = keyMap.find(keyStroke => keyStroke.key === event.key);
+    const found = keyMap.find((keyStroke) => keyStroke.key === event.key);
     console.log(found);
     let keyNote = found.note;
     console.log(keyNote);
     playNote(keyNote);
-    
-    
   }
-    
 });
 
 //Jam Track Loop JS
 let audioPlayer = document.getElementById("jamTrack");
 audioPlayer.loop = true;
 audioPlayer.load();
-
-
-
-
-

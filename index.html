@@ -9,24 +9,30 @@
         <link rel="stylesheet" href="style.css">
         <script type="module" src="./tones.js"> </script>
         
+        
     </head>
     <body id="body">
         <h1><em>Pomodoro + Piano</em></h1>
         <!--Pomodoro HTML-->
         
         
+        
         <div id="pomContainer">
             <p id = "work" class="label">Work</p><p id = "break" class="label">Break</p><p id = "cycles" class="label">Session Count</p>
             <!--Work Timer-->
-            <div id="work-timer" class = "timer">
+            <form id="work-timer" onsubmit="return false">
+            <div class = "timer">
                 
                 
-                <input  title = "Minutes: Seconds" name = "sessionTime" type = "text" id="sessionTime" placeholder="" required pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"></Input>
+                <input  title = "Minutes: Seconds" name = "" type = "text" id="workTimeInput" placeholder=""></Input>
             
                 
                 
-                <p id="w_minutes">25</p><p class="colon">:</p><p id="w_seconds">00</p>
+                <p id="w_minutes" >25</p><p class="colon" id = "workColon">:</p><p id="w_seconds">00</p>
+            
             </div>
+        </form>
+        
             <!--Cycle Counter-->
         <p id="counter" class="timer">0</p>
             
@@ -40,14 +46,14 @@
         <button id="reset" class="btn">Reset</button>
     </div>
     
-    <!--Custom time input-->
+    <!--Custom time input
     <h2>Pomodoro Settings</h2>
     <form id="form">
         <Input type = "text" id="userStartMin" placeholder="Enter Session Minutes"></Input>
         <Input type = "text" id="userStartSec" placeholder="Enter Session Seconds"></Input>
         <Input type = "text" id="userBreakMin" placeholder ="Enter Break Minutes"></Input>
         <Input type = "text" id="userBreakSec" placeholder ="Enter Break Seconds"></Input>
-        <input type = "button" value="Save Settings" id="updateButton">
+        <input type = "button" value="Save Settings" id="updateButton"> -->
 
     </form>
     <h2>Piano Settings</h2>

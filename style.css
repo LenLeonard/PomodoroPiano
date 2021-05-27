@@ -79,20 +79,18 @@ p {
     padding: 0;
 }
 
+.workTimerText{
+  font-size: 30px;
+}
 #counter {
     grid-area: 2 / 3 / 2 / 3;
     color: rgb(119, 112, 230);
 }
-#sessionTime {
+#workTimeInput {
   font-family: Roboto;
     font-size: 30px;
     font-weight: bold;
-    border-top-style: hidden;
-  border-right-style: hidden;
-  border-left-style: hidden;
-  border-bottom-style: hidden;
-  border-color: transparent;
-  background-color: transparent;
+ background-color: transparent;
   width: 42%;
   position: relative;
   left: 78px;
