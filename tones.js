@@ -1,4 +1,5 @@
 import * as Tone from "https://cdn.skypack.dev/tone";
+import * as timelogic from "./timerlogic.js";
 
 //Pomodoro JS
 
@@ -17,7 +18,6 @@ let breakSeconds = document.getElementById("b_seconds");
 
 //Declaring the time as undefined; the setInterval() function is called when it startTimer is defined
 let startTimer;
-
 //Logic for Pomodoro Start, Reset, and Pause Buttons
 
 start.addEventListener("click", function () {
@@ -41,9 +41,7 @@ reset.addEventListener("click", function () {
   startTimer = undefined;
 
   //Hide piano and pause backing track
-  overlay.style.display = "block";
-  pianoHidden = true;
-  audioPlayer.pause();
+  hidePiano();
 });
 
 stop.addEventListener("click", function () {
@@ -63,7 +61,7 @@ workTimeInput.addEventListener("keyup", function (event) {
   if (event.key === "Enter") {
     const timeRegex = /^\d{0,2}:\d{0,2}$/;
     let timerValue = event.target.value;
-    
+
     //Update clock text if regex test is successful
     if (timeRegex.test(timerValue) === true) {
       let strArr = timerValue.split(":");
@@ -87,12 +85,11 @@ workTimeInput.addEventListener("keyup", function (event) {
       let workSecondsText = document.getElementById("w_seconds");
       let workColonText = document.getElementById("workColon");
 
-      workMinutesText.style.fontSize = "30px";
-      workSecondsText.style.fontSize = "30px";
-      workColonText.style.fontSize = "30px";
-      
+      workMinutesText.className = "timer";
+      workSecondsText.className = "timer";
+      workColonText.className = "timer";
+
       //How to handle user input that failes regular expression test
-    
     } else {
       console.log("did not pass");
       if (event.key === "Enter") {
@@ -113,17 +110,17 @@ textInput.addEventListener("click", function () {
   stopInterval();
   startTimer = undefined;
 
-  let tempPlaceHolder = workMinutes.innerText + ":" + workSeconds.innerText;
+  let tempPlaceHolder = `${workMinutes.innerText}:${workSeconds.innerText}`;
   document.getElementById("workTimeInput").placeholder = tempPlaceHolder;
   document.getElementById("workTimeInput").style.caretColor = "black";
-  
+
   let workMinutesText = document.getElementById("w_minutes");
   let workSecondsText = document.getElementById("w_seconds");
   let workColonText = document.getElementById("workColon");
 
-  workMinutesText.style.fontSize = "0px";
-  workSecondsText.style.fontSize = "0px";
-  workColonText.style.fontSize = "0px";
+  workMinutesText.className = "hidden";
+  workSecondsText.className = "hidden";
+  workColonText.className = "hidden";
 });
 
 //Handling User Click Away: when the user clicks to edit time and then clicks the body of the page,
@@ -139,9 +136,9 @@ body.addEventListener("click", function () {
     let workSecondsText = document.getElementById("w_seconds");
     let workColonText = document.getElementById("workColon");
 
-    workMinutesText.style.fontSize = "30px";
-    workSecondsText.style.fontSize = "30px";
-    workColonText.style.fontSize = "30px";
+    workMinutesText.className = "timer";
+    workSecondsText.className = "timer";
+    workColonText.className = "timer";
 
     //Hide Display Text
     document.getElementById("workTimeInput").value = "";
@@ -183,57 +180,69 @@ updateButton.addEventListener('click', function(){
   });
 */
 
+export default function hidePiano() {
+  overlay.style.display = "block";
+  pianoHidden = true;
+  audioPlayer.pause();
+}
+export function showPiano() {
+  overlay.style.display = "none";
+  pianoHidden = false;
+  audioPlayer.play();
+}
 
 //The logic that handles the countdown
-//(It also makes calls to the piano module to hide or reveal the piano
+//(It also makes calls to the piano module to hide or reveal the piano)
 //Start Time Function
 
 function timer() {
   //Work Timer Countdown
-  if (workSeconds.innerText != 0) {
-    
+  if (parseInt(workSeconds.innerText) != 0) {
     //Hide the piano while the counter is decrementing
-    overlay.style.display = "block";
-    pianoHidden = true;
-    audioPlayer.pause();
+    hidePiano();
 
     //Decrement by one at interval
     workSeconds.innerText--;
-    
+
     //Add leading 0's to the clock display
-    if (workSeconds.innerText < 10) {
-      workSeconds.innerText = "0" + workSeconds.innerText;
+    if (parseInt(workSeconds.innerText) < 10) {
+      workSeconds.innerText = `${0}${workSeconds.innerText}`;
     }
-    //If there is still time left but we are out of seconds, mnove to the next minute 
-  } else if (workMinutes.innerText != 0 && workSeconds.innerText == 0) {
+    //If there is still time left but we are out of seconds, mnove to the next minute
+  } else if (
+    parseInt(workMinutes.innerText) != 0 &&
+    parseInt(workSeconds.innerText) == 0
+  ) {
     workSeconds.innerText = 59;
     workMinutes.innerText--;
   }
 
   //Break Timer Countdown
-  if (workMinutes.innerText == 0 && workSeconds.innerText == 0) {
-    
+  if (
+    parseInt(workMinutes.innerText) == 0 &&
+    parseInt(workSeconds.innerText) == 0
+  ) {
     //Shows the piano at break time
-    overlay.style.display = "none";
-    pianoHidden = false;
-    audioPlayer.play();
+    showPiano();
 
-
-    if (breakSeconds.innerText != 0) {
+    if (parseInt(breakSeconds.innerText) != 0) {
       breakSeconds.innerText--;
-      if (breakSeconds.innerText < 10) {
-        breakSeconds.innerText = "0" + breakSeconds.innerText;
+      if (parseInt(breakSeconds.innerText) < 10) {
+        breakSeconds.innerText = `${0}${breakSeconds.innerText}`;
       }
-    } else if (breakMinutes.innerText != 0 && breakSeconds.innerText == 0) {
+    } else if (
+      parseInt(breakMinutes.innerText) != 0 &&
+      parseInt(breakSeconds.innerText) == 0
+    ) {
       breakSeconds.innerText = 59;
       breakMinutes.innerText--;
     }
   }
   //Increment Counter by one if one full cyle is completed
   if (
-    workMinutes.innerText == 0 &&
-    workSeconds.innerText == 0 &&
-    breakSeconds.innerText == 0
+    parseInt(workMinutes.innerText) == 0 &&
+    parseInt(workSeconds.innerText) == 0 &&
+    parseInt(breakSeconds.innerText) == 0
   ) {
     workMinutes.innerText = 25;
     workSeconds.innerText = "00";
@@ -250,7 +259,6 @@ function timer() {
 function stopInterval() {
   clearInterval(startTimer);
 }
-
 
 //Piano JS
 
@@ -340,18 +348,14 @@ let hidePianoBtn = document.getElementById("hidePiano");
 let overlay = document.getElementById("pianoOverlay");
 
 hidePianoBtn.addEventListener("click", function () {
-  overlay.style.display = "block";
-  pianoHidden = true;
-  audioPlayer.pause();
+  hidePiano();
   if (startTimer === undefined) {
     startTimer = setInterval(timer, 1000);
   }
 });
 
 revealPianoBtn.addEventListener("click", function () {
-  overlay.style.display = "none";
-  pianoHidden = false;
-  audioPlayer.play();
+  showPiano();
   stopInterval();
   startTimer = undefined;
 });
