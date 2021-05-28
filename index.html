@@ -38,10 +38,13 @@
         <p id="counter" class="timer">0</p>
             
             <!--Break Timer-->
-            <div id="break-timer" class = "timer">
-                <p id="b_minutes">5</p><p class="colon">:</p><p id="b_seconds">00</p>
+            <form id="break-timer" onsubmit="return false">
+            <div  class = "timer">
+                <input  title = "Minutes: Seconds" name = "" type = "text" id="breakTimeInput" placeholder=""></Input>
+                <p id="b_minutes">5</p><p class="colon" id="breakColon">:</p><p id="b_seconds">00</p>
+              
             </div>
-        
+        </form>
         <button id="start" class="btn">Start</button>
         <button id="stop" class="btn">Pause</button>
         <button id="reset" class="btn">Reset</button>
@@ -69,6 +72,8 @@
         <source src="bossaNovaJamTrack.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
       </audio><br>
+      <input type='checkbox' id="audioCheckBox" name="checky" value="startJamTrack">
+      <label for="audioCheckBox">Start jam track when the piano is revealed?</label>
     </div>
     
     

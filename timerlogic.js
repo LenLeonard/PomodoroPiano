@@ -1,4 +1,4 @@
-
+import {showPiano, hidePiano} from './tones.js'
 
 //The logic that handles the countdown
 //(It also makes calls to the piano module to hide or reveal the piano)
@@ -6,15 +6,15 @@
 
 
 
-let startTimer; 
 
-export  default function timer() {
+
+export  function timer(workSeconds,workMinutes,breakSeconds,breakMinutes) {
     //Work Timer Countdown
     if (parseInt(workSeconds.innerText) != 0) {
       
       //Hide the piano while the counter is decrementing
       // I removed the hidePiano(); function for fear it may lead to circular dependencies
-
+      hidePiano();
       //Decrement by one at interval
       workSeconds.innerText--;
       
@@ -29,10 +29,10 @@ export  default function timer() {
     }
   
     //Break Timer Countdown
-    if ((parseIntworkMinutes.innerText) == 0 && parseInt(workSeconds.innerText) == 0) {
+    if (parseInt(workMinutes.innerText) == 0 && parseInt(workSeconds.innerText) == 0) {
       
       //Shows the piano at break time
-      
+      showPiano();
       // I removed the showPiano(); function for fear it may lead to circular dependencies
   
   
@@ -64,7 +64,7 @@ export  default function timer() {
   }
   
   //Stop Time Function
-  export function stopInterval() {
+  export function stopInterval(startTimer) {
     clearInterval(startTimer);
   }
   

@@ -1,5 +1,5 @@
 import * as Tone from "https://cdn.skypack.dev/tone";
-import * as timelogic from "./timerlogic.js";
+import {timer, stopInterval} from "./timerlogic.js";
 
 //Pomodoro JS
 
@@ -20,9 +20,13 @@ let breakSeconds = document.getElementById("b_seconds");
 let startTimer;
 //Logic for Pomodoro Start, Reset, and Pause Buttons
 
+//This boolean value is for siginalling when a time has been entered but the clock has not started
+let waitingToStart = true;
+
 start.addEventListener("click", function () {
   if (startTimer === undefined) {
-    startTimer = setInterval(timer, 1000);
+    startTimer = setInterval(function(){timer(workSeconds,workMinutes,breakSeconds,breakMinutes)}, 1000);
+    waitingToStart = false;
   } else {
     alert("You've already started!");
   }
@@ -35,18 +39,21 @@ reset.addEventListener("click", function () {
   breakMinutes.innerText = 5;
   breakSeconds.innerText = "00";
   document.getElementById("counter").innerText = 0;
+  waitingToStart = true
 
   //Stop timer
-  stopInterval();
+  stopInterval(startTimer);
   startTimer = undefined;
+  waitingToStart = true
 
   //Hide piano and pause backing track
   hidePiano();
 });
 
 stop.addEventListener("click", function () {
-  stopInterval();
+  stopInterval(startTimer);
   startTimer = undefined;
+  waitingToStart = true
 });
 
 //Pomodoro Text Input Counters
@@ -77,7 +84,7 @@ workTimeInput.addEventListener("keyup", function (event) {
       document.getElementById("workTimeInput").placeholder = "";
       document.getElementById("workTimeInput").style.caretColor = "transparent";
 
-      startTimer = setInterval(timer, 1000);
+      //startTimer = setInterval(function(){timer(workSeconds,workMinutes,breakSeconds,breakMinutes)}, 1000);
 
       //Show Decrementing Clock Text (This is the text in the <p> tag that gets updated every second)
 
@@ -107,7 +114,7 @@ let textInput = document.getElementById("workTimeInput");
 textInput.addEventListener("click", function () {
   console.log("clicky");
 
-  stopInterval();
+  stopInterval(startTimer);
   startTimer = undefined;
 
   let tempPlaceHolder = `${workMinutes.innerText}:${workSeconds.innerText}`;
@@ -147,6 +154,95 @@ body.addEventListener("click", function () {
   }
 });
 
+breakTimeInput.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    const timeRegex = /^\d{0,2}:\d{0,2}$/;
+    let timerValue = event.target.value;
+
+    //Update clock text if regex test is successful
+    if (timeRegex.test(timerValue) === true) {
+      let strArr = timerValue.split(":");
+      let userStartMin = strArr[0];
+      let userStartSec = strArr[1];
+      breakMinutes.innerText = userStartMin;
+      breakSeconds.innerText = userStartSec;
+      console.log(timerValue + "passed");
+
+      //Hide Input Form and Start Clock(clock starts when startTime is defined)
+
+      document.getElementById("breakTimeInput").value = "";
+      document.getElementById("breakTimeInput").placeholder = "";
+      document.getElementById("breakTimeInput").style.caretColor = "transparent";
+
+      //startTimer = setInterval(function(){timer(workSeconds,workMinutes,breakSeconds,breakMinutes)}, 1000);
+
+      //Show Decrementing Clock Text (This is the text in the <p> tag that gets updated every second)
+
+      let breakMinutesText = document.getElementById("b_minutes");
+      let breakSecondsText = document.getElementById("b_seconds");
+      let breakColonText = document.getElementById("breakColon");
+
+      breakMinutesText.className = "timer";
+      breakSecondsText.className = "timer";
+      breakColonText.className = "timer";
+
+      //How to handle user input that failes regular expression test
+    } else {
+      console.log("did not pass");
+      if (event.key === "Enter") {
+        document.getElementById("breakTimeInput").value = "";
+      }
+      alert("Please enter minutes and seconds like this: 25:00");
+    }
+  }
+});
+
+//If the clock is ticking, clicking on it will pause the clock, present the existing time as the input place holder text, and
+//hide the decrementing clock text.
+
+let breakTextInput = document.getElementById("breakTimeInput");
+breakTextInput.addEventListener("click", function () {
+  console.log("clicky");
+
+  stopInterval(startTimer);
+  startTimer = undefined;
+
+  let tempPlaceHolder = `${breakMinutes.innerText}:${breakSeconds.innerText}`;
+  document.getElementById("breakTimeInput").placeholder = tempPlaceHolder;
+  document.getElementById("breakTimeInput").style.caretColor = "black";
+
+  let breakMinutesText = document.getElementById("b_minutes");
+  let breakSecondsText = document.getElementById("b_seconds");
+  let breakColonText = document.getElementById("breakColon");
+
+  breakMinutesText.className = "hidden";
+  breakSecondsText.className = "hidden";
+  breakColonText.className = "hidden";
+});
+
+//Handling User Click Away: when the user clicks to edit time and then clicks the body of the page,
+//the input field is hidden and the clock text returns (clicking on other elements yet unaccounted for)
+
+
+body.addEventListener("click", function () {
+  if (document.activeElement === body) {
+    console.log("body");
+
+    //Show Timer text
+    let breakMinutesText = document.getElementById("b_minutes");
+    let breakSecondsText = document.getElementById("b_seconds");
+    let breakColonText = document.getElementById("breakColon");
+
+    breakMinutesText.className = "timer";
+    breakSecondsText.className = "timer";
+    breakColonText.className = "timer";
+
+    //Hide Display Text
+    document.getElementById("breakTimeInput").value = "";
+    document.getElementById("breakTimeInput").placeholder = "";
+    document.getElementById("breakTimeInput").style.caretColor = "transparent";
+  }
+});
 //Pomodoro Save Settings Functionality
 //To be removed when text input is working
 
@@ -180,84 +276,15 @@ updateButton.addEventListener('click', function(){
   });
 */
 
-export default function hidePiano() {
+export function hidePiano() {
   overlay.style.display = "block";
   pianoHidden = true;
-  audioPlayer.pause();
+  
 }
 export function showPiano() {
   overlay.style.display = "none";
   pianoHidden = false;
-  audioPlayer.play();
-}
-
-//The logic that handles the countdown
-//(It also makes calls to the piano module to hide or reveal the piano)
-//Start Time Function
-
-function timer() {
-  //Work Timer Countdown
-  if (parseInt(workSeconds.innerText) != 0) {
-    //Hide the piano while the counter is decrementing
-    hidePiano();
-
-    //Decrement by one at interval
-    workSeconds.innerText--;
-
-    //Add leading 0's to the clock display
-    if (parseInt(workSeconds.innerText) < 10) {
-      workSeconds.innerText = `${0}${workSeconds.innerText}`;
-    }
-    //If there is still time left but we are out of seconds, mnove to the next minute
-  } else if (
-    parseInt(workMinutes.innerText) != 0 &&
-    parseInt(workSeconds.innerText) == 0
-  ) {
-    workSeconds.innerText = 59;
-    workMinutes.innerText--;
-  }
-
-  //Break Timer Countdown
-  if (
-    parseInt(workMinutes.innerText) == 0 &&
-    parseInt(workSeconds.innerText) == 0
-  ) {
-    //Shows the piano at break time
-    showPiano();
-
-    if (parseInt(breakSeconds.innerText) != 0) {
-      breakSeconds.innerText--;
-      if (parseInt(breakSeconds.innerText) < 10) {
-        breakSeconds.innerText = `${0}${breakSeconds.innerText}`;
-      }
-    } else if (
-      parseInt(breakMinutes.innerText) != 0 &&
-      parseInt(breakSeconds.innerText) == 0
-    ) {
-      breakSeconds.innerText = 59;
-      breakMinutes.innerText--;
-    }
-  }
-  //Increment Counter by one if one full cyle is completed
-  if (
-    parseInt(workMinutes.innerText) == 0 &&
-    parseInt(workSeconds.innerText) == 0 &&
-    parseInt(breakSeconds.innerText) == 0
-  ) {
-    workMinutes.innerText = 25;
-    workSeconds.innerText = "00";
-
-    breakMinutes.innerText = 5;
-    breakSeconds.innerText = "00";
-
-    document.getElementById("counter").innerText++;
-  }
-  console.log(workMinutes.innerText + ":" + workSeconds.innerText);
-}
-
-//Stop Time Function
-function stopInterval() {
-  clearInterval(startTimer);
+  
 }
 
 //Piano JS
@@ -349,16 +376,22 @@ let overlay = document.getElementById("pianoOverlay");
 
 hidePianoBtn.addEventListener("click", function () {
   hidePiano();
-  if (startTimer === undefined) {
-    startTimer = setInterval(timer, 1000);
-  }
+  audioPlayer.pause();
+  //if (startTimer === undefined) {
+    //startTimer = setInterval(function(){timer(workSeconds, workMinutes, breakSeconds, breakMinutes)}, 1000);
+  //}
 });
 
 revealPianoBtn.addEventListener("click", function () {
+  if(startTimer !== undefined || waitingToStart === true){
   showPiano();
-  stopInterval();
+  if(startAudio === true){
+    audioPlayer.play();
+  }
+  stopInterval(startTimer);
   startTimer = undefined;
-});
+
+}});
 
 //Computer keys as musical keys functionality
 
@@ -477,3 +510,21 @@ window.addEventListener("keydown", (event) => {
 let audioPlayer = document.getElementById("jamTrack");
 audioPlayer.loop = true;
 audioPlayer.load();
+
+
+//Jam Track Toggle
+let startAudio = false;
+let checkbox = document.getElementById("audioCheckBox");
+checkbox.addEventListener('change', function() {
+  if (this.checked) {
+    console.log("Checkbox is checked..");
+    startAudio = true
+    console.log(startAudio);
+  } else {
+    console.log("Checkbox is not checked..");
+    startAudio = false
+    console.log(startAudio);
+  }
+});
+
+
