@@ -25,8 +25,51 @@ let waitingToStart = true;
 
 start.addEventListener("click", function () {
   if (startTimer === undefined) {
+    if(regexPassed === true || regexPassed === undefined){
+      console.log(regexPassed)
     startTimer = setInterval(function(){timer(workSeconds,workMinutes,breakSeconds,breakMinutes)}, 1000);
     waitingToStart = false;
+    regexPassed === undefined;
+    }else{
+      //Reset the timer if Regex is not passed
+      console.log(regexPassed)
+      let workMinutesText = document.getElementById("w_minutes");
+      let workSecondsText = document.getElementById("w_seconds");
+      let workColonText = document.getElementById("workColon");
+  
+      workMinutesText.className = "timer";
+      workSecondsText.className = "timer";
+      workColonText.className = "timer";
+  
+      //Hide Display Text
+      document.getElementById("workTimeInput").value = "";
+      document.getElementById("workTimeInput").placeholder = "";
+      document.getElementById("workTimeInput").style.caretColor = "transparent";
+
+      //Break Timer 
+      
+      let breakMinutesText = document.getElementById("b_minutes");
+      let breakSecondsText = document.getElementById("b_seconds");
+      let breakColonText = document.getElementById("breakColon");
+  
+      breakMinutesText.className = "timer";
+      breakSecondsText.className = "timer";
+      breakColonText.className = "timer";
+  
+      //Hide Display Text
+      document.getElementById("breakTimeInput").value = "";
+      document.getElementById("breakTimeInput").placeholder = "";
+      document.getElementById("breakTimeInput").style.caretColor = "transparent";
+    
+
+
+
+
+
+
+
+  waitingToStart = true
+    }
   } else {
     alert("You've already started!");
   }
@@ -63,14 +106,15 @@ stop.addEventListener("click", function () {
 //and then uses font stylings to swap out the clock text from the text input text
 
 //Configure the form to send input when enter key is triggered, and check that input against a regular expression
-
+var regexPassed;
 workTimeInput.addEventListener("keyup", function (event) {
   
     const timeRegex = /\d{0,2}:\d{2}$/;
     let timerValue = event.target.value;
-
     //Update clock text if regex test is successful
     if (timeRegex.test(timerValue) === true) {
+      regexPassed = true;
+      console.log(regexPassed)
       let strArr = timerValue.split(":");
       let userStartMin = strArr[0];
       let userStartSec = strArr[1];
@@ -97,6 +141,10 @@ workTimeInput.addEventListener("keyup", function (event) {
       workColonText.className = "timer";
 
       
+    
+
+    }else{
+      regexPassed = false;
     } 
   
   }
@@ -156,6 +204,8 @@ breakTimeInput.addEventListener("keyup", function (event) {
 
     //Update clock text if regex test is successful
     if (timeRegex.test(timerValue) === true) {
+      regexPassed = true;
+      console.log(regexPassed)
       let strArr = timerValue.split(":");
       let userStartMin = strArr[0];
       let userStartSec = strArr[1];
