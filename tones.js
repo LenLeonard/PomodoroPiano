@@ -1,4 +1,4 @@
-import * as Tone from "https://cdn.skypack.dev/tone";
+import {Synth} from "https://cdn.skypack.dev/tone";
 import {timer, stopInterval} from "./timerlogic.js";
 
 //Pomodoro JS
@@ -65,8 +65,8 @@ stop.addEventListener("click", function () {
 //Configure the form to send input when enter key is triggered, and check that input against a regular expression
 
 workTimeInput.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    const timeRegex = /^\d{0,2}:\d{0,2}$/;
+  
+    const timeRegex = /\d{0,2}:\d{2}$/;
     let timerValue = event.target.value;
 
     //Update clock text if regex test is successful
@@ -76,7 +76,7 @@ workTimeInput.addEventListener("keyup", function (event) {
       let userStartSec = strArr[1];
       workMinutes.innerText = userStartMin;
       workSeconds.innerText = userStartSec;
-      console.log(timerValue + "passed");
+      
 
       //Hide Input Form and Start Clock(clock starts when startTime is defined)
 
@@ -96,23 +96,18 @@ workTimeInput.addEventListener("keyup", function (event) {
       workSecondsText.className = "timer";
       workColonText.className = "timer";
 
-      //How to handle user input that failes regular expression test
-    } else {
-      console.log("did not pass");
-      if (event.key === "Enter") {
-        document.getElementById("workTimeInput").value = "";
-      }
-      alert("Please enter minutes and seconds like this: 25:00");
-    }
+      
+    } 
+  
   }
-});
+);
 
 //If the clock is ticking, clicking on it will pause the clock, present the existing time as the input place holder text, and
 //hide the decrementing clock text.
 
 let textInput = document.getElementById("workTimeInput");
 textInput.addEventListener("click", function () {
-  console.log("clicky");
+  
 
   stopInterval(startTimer);
   startTimer = undefined;
@@ -136,7 +131,7 @@ textInput.addEventListener("click", function () {
 let body = document.getElementById("body");
 body.addEventListener("click", function () {
   if (document.activeElement === body) {
-    console.log("body");
+    
 
     //Show Timer text
     let workMinutesText = document.getElementById("w_minutes");
@@ -155,8 +150,8 @@ body.addEventListener("click", function () {
 });
 
 breakTimeInput.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    const timeRegex = /^\d{0,2}:\d{0,2}$/;
+  
+    const timeRegex = /\d{0,2}:\d{2}$/;
     let timerValue = event.target.value;
 
     //Update clock text if regex test is successful
@@ -166,7 +161,7 @@ breakTimeInput.addEventListener("keyup", function (event) {
       let userStartSec = strArr[1];
       breakMinutes.innerText = userStartMin;
       breakSeconds.innerText = userStartSec;
-      console.log(timerValue + "passed");
+     
 
       //Hide Input Form and Start Clock(clock starts when startTime is defined)
 
@@ -186,23 +181,17 @@ breakTimeInput.addEventListener("keyup", function (event) {
       breakSecondsText.className = "timer";
       breakColonText.className = "timer";
 
-      //How to handle user input that failes regular expression test
-    } else {
-      console.log("did not pass");
-      if (event.key === "Enter") {
-        document.getElementById("breakTimeInput").value = "";
-      }
-      alert("Please enter minutes and seconds like this: 25:00");
-    }
+      
+    } 
   }
-});
+);
 
 //If the clock is ticking, clicking on it will pause the clock, present the existing time as the input place holder text, and
 //hide the decrementing clock text.
 
 let breakTextInput = document.getElementById("breakTimeInput");
 breakTextInput.addEventListener("click", function () {
-  console.log("clicky");
+  
 
   stopInterval(startTimer);
   startTimer = undefined;
@@ -226,7 +215,7 @@ breakTextInput.addEventListener("click", function () {
 
 body.addEventListener("click", function () {
   if (document.activeElement === body) {
-    console.log("body");
+    
 
     //Show Timer text
     let breakMinutesText = document.getElementById("b_minutes");
@@ -243,38 +232,6 @@ body.addEventListener("click", function () {
     document.getElementById("breakTimeInput").style.caretColor = "transparent";
   }
 });
-//Pomodoro Save Settings Functionality
-//To be removed when text input is working
-
-/* let updateButton = document.getElementById('updateButton');
-updateButton.addEventListener('click', function(){
-  
-  let userStartMin = document.getElementById('userStartMin').value;
-  if(userStartMin !== ""){
-    workMinutes.innerText = userStartMin;
-  }
-  
-  let userStartSec = document.getElementById('userStartSec').value;
-  if(userStartSec !== ""){
-    workSeconds.innerText = userStartSec;
-  }
-
-  let userBreakMin = document.getElementById('userBreakMin').value;
-  if(userBreakMin !== ""){
-    breakMinutes.innerText = userBreakMin;
-  }
-  let userBreakSec = document.getElementById('userBreakSec').value;
-  if(userBreakSec !== ""){
-    breakSeconds.innerText = userBreakSec;
-  }
-  
-  document.getElementById('userStartMin').value = ""
-  document.getElementById('userStartSec').value = ""
-  document.getElementById('userBreakMin').value = ""
-  document.getElementById('userBreakSec').value = ""
-
-  });
-*/
 
 export function hidePiano() {
   overlay.style.display = "block";
@@ -291,7 +248,7 @@ export function showPiano() {
 
 function playNote(note) {
   if (pianoHidden === false) {
-    const synth = new Tone.Synth().toDestination();
+    const synth = new Synth().toDestination();
     synth.triggerAttackRelease(note, "8n");
 
     //Darkens the keys upon trigger
@@ -304,11 +261,7 @@ function playNote(note) {
 }
 
 //Add onclick event listeners to each key element that play the corresponding note
-//was trying a loop based solution below, yet unsuccessful
-/*let noteArray = ['C4','Db4','D4','Eb','E4','F','Gb4','G4','Ab4','A4','Bb4','B4','C5','Db5','D5','Eb5','E5','F5'];
-noteArray.forEach(note => {document.getElementById(note).addEventListener("click", function(){ playNote(note); });
-  
-}); */
+
 
 document.getElementById("C4").addEventListener("click", function () {
   playNote("C4");
@@ -377,9 +330,6 @@ let overlay = document.getElementById("pianoOverlay");
 hidePianoBtn.addEventListener("click", function () {
   hidePiano();
   audioPlayer.pause();
-  //if (startTimer === undefined) {
-    //startTimer = setInterval(function(){timer(workSeconds, workMinutes, breakSeconds, breakMinutes)}, 1000);
-  //}
 });
 
 revealPianoBtn.addEventListener("click", function () {
@@ -497,11 +447,11 @@ window.addEventListener("keydown", (event) => {
 
   if (pianoKeys.includes(event.key)) {
     let keyStroke = event.key;
-    console.log(keyStroke);
+    
     const found = keyMap.find((keyStroke) => keyStroke.key === event.key);
-    console.log(found);
+    
     let keyNote = found.note;
-    console.log(keyNote);
+    
     playNote(keyNote);
   }
 });
@@ -517,13 +467,13 @@ let startAudio = false;
 let checkbox = document.getElementById("audioCheckBox");
 checkbox.addEventListener('change', function() {
   if (this.checked) {
-    console.log("Checkbox is checked..");
+    
     startAudio = true
-    console.log(startAudio);
+    
   } else {
-    console.log("Checkbox is not checked..");
+    
     startAudio = false
-    console.log(startAudio);
+    
   }
 });
 

@@ -80,7 +80,7 @@ p {
 
 #counter {
   grid-area: 2 / 3 / 2 / 3;
-  color: rgb(119, 112, 230);
+  color: rgb(0, 0, 0);
 }
 #workTimeInput {
   font-family: Roboto;
@@ -128,25 +128,20 @@ p {
 
 /*buttons*/
 
+
+
 .btn {
-  align-self: center;
-  justify-self: center;
-
-  width: 100px;
-  height: 30px;
-  font-family: Roboto;
-  font-size: 20px;
+ font-family: Roboto;
+font-size: 20px;
+ 
 }
 
-#overlayButtons {
-  text-align: center;
-  position: relative;
-  bottom: 10px;
-  width: auto;
-  height: auto;
-  font-family: Roboto;
-  font-size: 20px;
+#overlayButtons{
+ text-align: center;
+  
 }
+
+
 
 #start {
   grid-area: 3 / 2 / 3 / 2;
