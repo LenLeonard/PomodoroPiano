@@ -1,4 +1,4 @@
-# Pomodoro + Piano
+# Pomodoro + Piano v1.0
 
 Pomodoro + Piano is a variation on the the classic pomodoro timer, a popular productivity tool. Pomodoro is is Italian for tomato; Francesco Cirillo developed the pomodoro technqiue as a time management method in the late 1980's, naming the technique after the Pomodoro (tomato-shaped) kitchen timers he used to manage his time as a university student.
 
@@ -20,4 +20,5 @@ Session count refers to the number of pomodoros that have been completed in this
 
 The app is not yet optimized for mobile devices and works best on desktop browsers.
 The piano makes use of the [tone.js](https://tonejs.github.io/) Javascript library.
+There are still some issues being worked out. Pull requests welcome.
 
